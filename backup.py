@@ -3,6 +3,8 @@ import schedule
 import time
 import smtplib
 import ssl
+import shutil
+from datetime import datetime
 from email.message import EmailMessage
 from dotenv import load_dotenv
 
@@ -32,6 +34,11 @@ def send_email(subject, content):
 
 def backup_database():
     try:
+        backup_dir = "backup"
+        os.makedirs(backup_dir, exist_ok=True)
+        backup_file = os.path.join(backup_dir)
+        shutil.copy(DATABASE_FILE, backup_file)
+
         send_email(
             subject="Backup thành công",
             content=f"Đã backup database thành công"
