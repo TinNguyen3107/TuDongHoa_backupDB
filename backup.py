@@ -50,9 +50,9 @@ def backup_database():
         )
         print(f"Lỗi backup: {e}")
 
-backup_database()
+# backup_database()
 
-# schedule.every().day.at("00:00").do(backup_database)
+schedule.every().day.at("00:00").do(backup_database)
 
 print("Đang chạy lịch backup")
 while True:
