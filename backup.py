@@ -4,29 +4,28 @@ import time
 import smtplib
 import ssl
 import shutil
-from datetime import datetime
 from email.message import EmailMessage
 from dotenv import load_dotenv
 
 load_dotenv()
 
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
-APP_PASSWORD = os.getenv("APP_PASSWORD")
-RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
+EMAIL_NGUOI_GOI = os.getenv("EMAIL_NGUOI_GOI")
+MAT_KHAU = os.getenv("MAT_KHAU")
+EMAIL_NGUOI_NHAN = os.getenv("EMAIL_NGUOI_NHAN")
 
-DATABASE_FILE = "fileTest/database.sqlite3"
+DB_FILE = "fileTest/database.sqlite3"
 
 def send_email(subject, content):
     msg = EmailMessage()
-    msg['From'] = SENDER_EMAIL
-    msg['To'] = RECEIVER_EMAIL
+    msg['From'] = EMAIL_NGUOI_GOI
+    msg['To'] = EMAIL_NGUOI_NHAN
     msg['Subject'] = subject
     msg.set_content(content)
 
     try:
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(SENDER_EMAIL, APP_PASSWORD)
+            server.login(EMAIL_NGUOI_GOI, MAT_KHAU)
             server.send_message(msg)
         print("Đã gửi email thông báo.")
     except Exception as e:
@@ -37,7 +36,7 @@ def backup_database():
         backup_dir = "backup"
         os.makedirs(backup_dir, exist_ok=True)
         backup_file = os.path.join(backup_dir)
-        shutil.copy(DATABASE_FILE, backup_file)
+        shutil.copy(DB_FILE, backup_file)
 
         send_email(
             subject="Backup thành công",
@@ -51,9 +50,9 @@ def backup_database():
         )
         print(f"Lỗi backup: {e}")
 
-# backup_database()
+backup_database()
 
-schedule.every().day.at("00:00").do(backup_database)
+# schedule.every().day.at("00:00").do(backup_database)
 
 print("Đang chạy lịch backup")
 while True:
